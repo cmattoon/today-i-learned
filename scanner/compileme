@@ -1,0 +1,1 @@
+g++ main.cpp src/utils.cpp src/host.cpp src/scanner.cpp src/datasource.cpp src/messages.cpp -I./include/ -I. -o foo
