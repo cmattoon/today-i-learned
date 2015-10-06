@@ -9,9 +9,6 @@
 int Host::ping(const std::string human_ip) {
   std::string command = "/bin/ping -c 1 ";
   command += human_ip;
-  
-  std::cout << " [+] Trying to ping host [" << human_ip << "]" << std::endl;
-  
   std::string result = exec(command);
   std::vector<std::string> lines = split(result, '\n');
   return pingSuccess(lines);

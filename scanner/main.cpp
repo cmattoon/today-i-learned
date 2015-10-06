@@ -3,43 +3,45 @@
 #include "scanner.h"
 #include "datasource.h"
 #include <pthread.h>
+#include <algorithm>
+#include <future>
+
+
 #define MAX_THREADS 5
+
 struct thread_data {
   int thread_id;
   std::string ipAddress;
 };
 
-void threaded_ping(void *threadid) {
-  Host *host = new Host();
-  long tid;
-  tid = (long)threadid;
-  std::cout << "\033[01m[Thread " << tid << "\033[0m]: Start" << std::endl;
+bool future_ping(const std::string &ip_address) {
+  std::promise<bool> promise;
+  std::future<bool> future = promise.get_future();
+
   
-  if (host->ping( ip )) {
-    std::cout<<"[Thread "<< tid <<"]: Server "<< ip << " is up"<<std::endl;
-    
-  } else {
-    std::cout<<"[Thread "<<tid<<"]: Server "<<ip<<" is up"<<std::endl;
-  }
-  pthread_exit(NULL);
+  std::thread thread([&promise, ip_address]() {
+      Host *host = new Host();
+      std::cout << "    [Inside thread]["<<ip_address<<"]" << std::endl;
+      promise.set_value(host->ping(ip_address));
+    });
+  bool result = future.get();
+  thread.join();
+  return result;
 }
+
 
 int main() {
   std::vector<std::string> host_list;
   Datasource::loadFile("ips.list", host_list);
   std::vector<std::string>::iterator iter;
 
-  pthread_t threads[MAX_THREADS];
-  int rc;
-  int i = 0;
-  struct thread_data *data;
-  data = (struct thread_data*) threadarg;
   
   for (iter=host_list.begin(); iter != host_list.end(); ++iter) {
-    data->ipAddr =*iter;
-    data->thread_id = i;
-    rc = pthread_create(&threads[i], NULL, threaded_ping, (void *)i);
-    i++;
+    if (future_ping(*iter)) {
+      std::cout << " [+] Host " << *iter << " is up" << std::endl;
+    } else {
+      std::cout << " [+] Host " << *iter << " is down" << std::endl;
+    }
   }
 
   //Scanner::readFileAndPingHosts("ips.list");
