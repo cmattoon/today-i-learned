@@ -1,0 +1,1 @@
+g++ lsdir.cpp -I/usr/local/lib/boost-1.59.0 -lboost_system -lboost_filesystem
