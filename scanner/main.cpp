@@ -34,14 +34,24 @@ int main() {
   std::vector<std::string> host_list;
   Datasource::loadFile("ips.list", host_list);
   std::vector<std::string>::iterator iter;
-
   
   for (iter=host_list.begin(); iter != host_list.end(); ++iter) {
-    if (future_ping(*iter)) {
+    std::promise<bool> promise;
+    std::future<bool> future = promise.get_future();
+    std::string ip_address = *iter;
+
+    std::thread the_thread([&promise, ip_address]() {
+	Host *host = new Host();
+	std::cout << " Thread: Checking " << ip_address << std::endl;
+	promise.set_value(host->ping(ip_address));
+      });
+
+    if (future.get()) {
       std::cout << " [+] Host " << *iter << " is up" << std::endl;
     } else {
       std::cout << " [+] Host " << *iter << " is down" << std::endl;
     }
+    the_thread.join();
   }
 
   //Scanner::readFileAndPingHosts("ips.list");
