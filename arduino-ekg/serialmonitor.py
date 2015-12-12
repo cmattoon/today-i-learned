@@ -108,13 +108,12 @@ class EKGModule:
             ch += 1
             stdscr.refresh()
 
-if __name__ == '__main__':
-    ekg = EKGModule(sys.argv[1])
-    stdscr = curses.initscr()
+def config_curses():
     curses.noecho()
     curses.cbreak()
     curses.start_color()
     curses.use_default_colors()
+
     curses.init_pair(1, curses.COLOR_RED, 0)
     curses.init_pair(2, curses.COLOR_GREEN, 0)
     curses.init_pair(3, curses.COLOR_YELLOW, 0)
@@ -122,6 +121,31 @@ if __name__ == '__main__':
     curses.init_pair(5, curses.COLOR_MAGENTA, 0)
     curses.init_pair(6, curses.COLOR_CYAN, 0)
 
-    for packet in ekg.capturePackets():
-        ekg._pp_packet(packet)
+def main():
+    ekg = EKGModule(sys.argv[1])
+    config_curses()
+    with open('data.txt', 'wb') as fd:
+        for packet in ekg.capturePackets():
+            ekg._pp_packet(packet)
+            fd.writelines(str(packet)+"\n")
+            fd.flush()
 
+if __name__ == '__main__':
+    error = 'Exit - OK'
+    code = 0
+    stdscr = curses.initscr()
+
+    try:
+        main()
+
+    except KeyboardInterrupt as e:
+        pass
+
+    except Exception as e:
+        error = e
+        code = 1
+    finally:
+        curses.endwin()
+
+    print(error)
+    exit(code)
