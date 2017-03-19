@@ -1,3 +1,3 @@
 public interface Observer {
-    public void update(double ibmPrice, double applPrice, double googPrice);
+    public void update(double ibmPrice, double aaplPrice, double googPrice);
 }
