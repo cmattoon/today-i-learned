@@ -10,6 +10,7 @@
 abstract class EnemyShip {
     protected $name = '';
     protected $damage = 0;
+    protected $speed = 0;
 
     public function getName():string {
         return $this->name;
@@ -17,6 +18,14 @@ abstract class EnemyShip {
 
     public function setName(string $name):void {
         $this->name = $name;
+    }
+
+    public function getSpeed():int {
+        return $this->speed;
+    }
+
+    public function setSpeed(int $speed):void {
+        $this->speed = $speed;
     }
 
     public function shoot() {
@@ -69,4 +78,7 @@ class EnemyShipFactory {
     }
 }
 
-var_dump(EnemyShipFactory::create(EnemyShipFactory::TYPE_ROCKET));
+if (empty(debug_backtrace())) {
+    $ship = EnemyShipFactory::create(EnemyShipFactory::TYPE_ROCKET);
+    echo $ship->getName() . PHP_EOL;
+}
