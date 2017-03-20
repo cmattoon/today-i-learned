@@ -14,5 +14,18 @@ public class PlayWithRemote {
 
         btnOn.press();
         btnOff.press();
+
+        Television theTelevision = new Television();
+        Radio theRadio = new Radio();
+
+        List<ElectronicDevice> allDevices = new ArrayList<ElectronicDevice>();
+
+        allDevices.add(theTelevision);
+        allDevices.add(theRadio);
+
+        TurnItAllOff killEverything = new TurnItAllOff(allDevices);
+
+        DeviceButton kill9 = new DeviceButton(killEverything);
+        kill9.press();
     }
 }
