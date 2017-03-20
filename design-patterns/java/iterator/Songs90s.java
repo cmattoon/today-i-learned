@@ -4,7 +4,7 @@
 import java.util.Hashtable;
 import java.util.Iterator;
 
-public class Songs90s {
+public class Songs90s implements SongIterator {
     Hashtable<Integer, SongInfo> bestSongs = new Hashtable<Integer, SongInfo>();
     int hashKey = 0;
 
@@ -18,8 +18,11 @@ public class Songs90s {
         bestSongs.put(hashKey, new SongInfo(name, band, year));
         hashKey++;
     }
-
+    /**
     public Hashtable<Integer, SongInfo> getBestSongs() {
         return bestSongs;
+        }*/
+    public Iterator createIterator() {
+        return bestSongs.values().iterator();
     }
 }

@@ -8,11 +8,47 @@ class DJ {
     Songs80s songs80;
     Songs90s songs90;
 
-    public DJ(Songs70s s7, Songs80s s8, Songs90s s9) {
-        songs70 = s7;
-        songs80 = s8;
-        songs90 = s9;
+    SongIterator iter70;
+    SongIterator iter80;
+    SongIterator iter90;
+
+    public DJ(SongIterator s70, SongIterator s80, SongIterator s90) {
+        iter70 = s70;
+        iter80 = s80;
+        iter90 = s90;
     }
+
+    /**
+     * Good!
+     */
+    public void playSongs() {
+        Iterator s70 = iter70.createIterator();
+        Iterator s80 = iter80.createIterator();
+        Iterator s90 = iter90.createIterator();
+
+        System.out.println("Songs of the 70s:");
+        showSongs(s70);
+
+        System.out.println("Songs of the 80s:");
+        showSongs(s80);
+
+        System.out.println("Songs of the 90s:");
+        showSongs(s90);
+    }
+
+    public void showSongs(Iterator iterator) {
+        while (iterator.hasNext()) {
+            SongInfo bestSongs = (SongInfo) iterator.next();
+
+            System.out.println("    " + bestSongs.getSongName() + " " +
+                               bestSongs.getBandName() + " (" +
+                               bestSongs.getYearReleased() + ")");
+
+        }
+        System.out.println("");
+    }
+
+    /** Bad!
 
     public void playSongs() {
         ArrayList al70 = songs70.getBestSongs();
@@ -49,4 +85,6 @@ class DJ {
                                bestSongs.getYearReleased() + ")");
         }
     }
+    */
+
 }

@@ -4,7 +4,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Songs70s {
+public class Songs70s implements SongIterator {
     ArrayList<SongInfo> bestSongs;
 
     public Songs70s() {
@@ -19,7 +19,12 @@ public class Songs70s {
         bestSongs.add(new SongInfo(name, band, year));
     }
 
+    /* Bad!
     public ArrayList<SongInfo> getBestSongs() {
         return bestSongs;
+    }*/
+
+    public Iterator createIterator() {
+        return bestSongs.iterator();
     }
 }
