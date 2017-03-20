@@ -49,8 +49,10 @@ public class FlyweightTest extends JFrame {
                     long startTime = System.currentTimeMillis();
 
                     for (int i=0; i < 100000; ++i) {
-                        g.setColor(getRandColor());
-                        g.fillRect(getRandX(), getRandY(), getRandX(), getRandY());
+                        //g.setColor(getRandColor());
+                        //g.fillRect(getRandX(), getRandY(), getRandX(), getRandY());
+                        MyRect r = new MyRect(getRandColor(), getRandX(), getRandY(), getRandX(), getRandY());
+                        r.draw(g);
                     }
 
                     long endTime = System.currentTimeMillis();
