@@ -27,5 +27,6 @@ public class PlayWithRemote {
 
         DeviceButton kill9 = new DeviceButton(killEverything);
         kill9.press();
+        kill9.pressUndo();
     }
 }

@@ -8,4 +8,8 @@ public class DeviceButton {
     public void press() {
         theCommand.execute();
     }
+
+    public void pressUndo() {
+        theCommand.undo();
+    }
 }

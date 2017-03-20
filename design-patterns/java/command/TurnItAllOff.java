@@ -12,4 +12,10 @@ public class TurnItAllOff implements Command {
             dev.off();
         }
     }
+
+    public void undo() {
+        for (ElectronicDevice dev : theDevices) {
+            dev.on();
+        }
+    }
 }

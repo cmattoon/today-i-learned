@@ -1,8 +1,7 @@
-class TVVolUp implements Command {
-
+class TVVolDown implements Command {
     ElectronicDevice theDevice;
 
-    public TVVolUp(ElectronicDevice newDevice) {
+    public TVVolDown(ElectronicDevice newDevice) {
         theDevice = newDevice;
     }
 

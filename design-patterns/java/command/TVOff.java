@@ -8,4 +8,8 @@ public class TVOff implements Command {
     public void execute() {
         theDevice.off();
     }
+
+    public void undo() {
+        theDevice.on();
+    }
 }
