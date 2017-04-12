@@ -1,36 +1,40 @@
 #!/usr/bin/env python
+"""
+
+"""
+import glob
 import sys, os
 import subprocess, shlex
 import signal
+
+E_NOARGS = 1
+E_BADFILE = 2
+E_OK = 0
 
 def print_usage(name):
     print(os.linesep.join([
             "Usage: %s <list of programs to find>" % (name),
             "Example: %s ls ncat lsof" % (name)
             ]))
-    return 1
+    return E_NOARGS
 
 def which(program):
-    """A quick passthrough for `which`
-    This could search the environment variable PATH too...
-
-    Returns a string, or None
+    """An implementation of `which`
     """
-    px = subprocess.Popen(shlex.split("which %s" % (program)),
-                          stdout=subprocess.PIPE,
-                          stderr=subprocess.PIPE)
 
-    out, err = px.communicate()
+    def _exe(path):
+        return os.path.isfile(path) and os.access(path, os.X_OK)
 
-    if out:
-        return out.strip()
-    return None
-
-def is_exe(path):
-    """Tests if `path` is executable
-    Returns bool
-    """
-    return os.access(path, os.X_OK)
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if _exe(program):
+            return program
+    else:
+        for path in os.environ['PATH'].split(os.pathsep):
+            path = path.strip('"')
+            exe = os.path.join(path, program)
+            if _exe(exe):
+                return exe
 
 def main(args):
     with DelayedKeyboardInterrupt():
@@ -46,13 +50,11 @@ def do_stuff(args):
     for i in range(1, len(args)):
         path = which(args[i])
 
-        if path is not None and is_exe(path):
-            print("Found binary! (%s)"% (path))
+        if path:
             continue
-
-        print("Cannot find %s" % (args[i]))
-        return 1
-    return 0
+        print("Cannot find '%s'" % (path))
+        return E_BADFILE
+    return E_OK
 
 class DelayedKeyboardInterrupt(object):
     def __enter__(self):
