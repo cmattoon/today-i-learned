@@ -1,0 +1,80 @@
+#!/usr/bin/env python
+"""
+Network Communication
+
+
+netcom <host> port filename
+
+The mode is implied by whether the <host> value is present.
+    Transmit : netcom 123.45.67.8 9999 input.txt
+    Receive  : netcom 9999 output.txt
+"""
+import os
+import socket
+import sys
+
+E_OK = 0
+E_USAGE = 1
+E_NOINPUT = 2
+E_NOOUTPUT = 3
+
+CMD_SEND = 'send'
+CMD_RECV = 'recv'
+
+def get_socket(host, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((host, port))
+
+def send(host, port, infile, BS=1024):
+    port = int(port)
+    sock = get_socket(host, port)
+
+    try:
+        with open(infile, 'rb') as fd:
+            data = None
+
+            while True:
+                _data = fd.read(BS)
+                if not _data: return E_OK if data is not None else E_NOINPUT
+                data += _data
+                sock.send(data)
+
+    finally:
+        sock.close()
+
+def recv(port, outfile, BS=1024):
+    port = int(port)
+    sock = get_socket('localhost', port)
+
+    try:
+        with open(outfile, 'wb+') as fd:
+            data = None
+
+            while True:
+                _data = sock.recv(BS)
+                if not _data: return E_OK if data is not None else E_NOOUTPUT
+                data += _data
+                fd.write(_data)
+    finally:
+        sock.close()
+
+
+def main(argv):
+    argc = len(argv)
+
+    if argc is 4: # send (includes 'host')
+        _, host, port, filename =  argv
+        return send(host, port, filename)
+
+    elif argc is 3: # recv (excludes 'host')
+        _, port, filename = argv
+        return recv(port, filename)
+
+    else:
+        print("Usage:")
+        print("netcom [recv|send] host port filename")
+        return E_USAGE
+
+
+if __name__ == '__main__':
+    exit(main(sys.argv))

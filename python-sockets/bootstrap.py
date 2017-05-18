@@ -39,18 +39,34 @@ class QS:
         return self.sock.sendall(message)
 
 
-def get_socket(t=socket.AF_INET, s=socket.SOCK_STREAM):
-    return socket.socket(t,s)
+def get_socket(socket_type=socket.AF_INET, protocol=socket.SOCK_STREAM):
+    """Creates a new socket
+
+    Args:
+     - socket_type (default: socket.AF_INET)
+     - protocol (default: socket.SOCK_STREAM)
+    """
+    return socket.socket(socket_type, protocol)
 
 def host2ip(host):
+    """Short for socket.gethostbyname"""
     try:
         return socket.gethostbyname(host)
     except socket.gaierror:
         return None
 
 
+def connect(host, port, sock_type=socket.AF_INET, proto=socket.SOCK_STREAM):
+    """Tries to create a socket and connect to the host.
 
+    Args:
+     - host (string)
+     - port (int)
 
+    Returns: socket.socket
+    """
+    sock = get_socket(sock_type, proto)
+    sock.connect((host, port))
 h2i=host2ip
 
 if __name__ == '__main__':
